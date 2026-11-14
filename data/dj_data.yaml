@@ -1,0 +1,68 @@
+# 音量设置：验证正常范围与上下边界
+volume_cases:
+  - case_name: "设置音量60"
+    volume: 60
+    expect:
+      code: 200
+  - case_name: "设置音量0（边界值）"
+    volume: 0
+    expect:
+      code: 200
+  - case_name: "设置音量100（边界值）"
+    volume: 100
+    expect:
+      code: 200
+  - case_name: "音量101超出上限-参数异常"
+    volume: 101
+    expect:
+      code: 400
+      msg: "0-100"
+  - case_name: "音量-1低于下限-参数异常"
+    volume: -1
+    expect:
+      code: 400
+      msg: "0-100"
+
+# 均衡器：四档有效 + 非法档位
+eq_cases:
+  - case_name: "切换摇滚均衡器"
+    mode: "rock"
+    expect:
+      code: 200
+  - case_name: "切换爵士均衡器"
+    mode: "jazz"
+    expect:
+      code: 200
+  - case_name: "均衡器模式非法-参数异常"
+    mode: "pop"
+    expect:
+      code: 400
+      msg: "均衡器"
+
+# 播放模式：四档有效 + 非法档位
+play_mode_cases:
+  - case_name: "切换列表循环"
+    mode: "loop"
+    expect:
+      code: 200
+  - case_name: "切换随机播放"
+    mode: "random"
+    expect:
+      code: 200
+  - case_name: "播放模式非法-参数异常"
+    mode: "shuffle"
+    expect:
+      code: 400
+      msg: "播放模式"
+
+# 播放：存在与不存在的歌曲
+play_cases:
+  - case_name: "播放存在的歌曲"
+    song_id: 2
+    expect:
+      code: 200
+  - case_name: "播放不存在的歌曲-返回404"
+    song_id: 999
+    expect:
+      code: 404
+      msg: "歌曲不存在"

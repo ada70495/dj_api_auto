@@ -1,0 +1,21 @@
+# 本地私有配置（真实账号/密钥），不入库
+config/env_local.yaml
+
+# 运行产物：日志、Allure 原始数据与 HTML 报告
+report/
+allure-result/
+allure-report/
+
+# Python 编译缓存与虚拟环境
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+
+# 系统文件、编辑器配置
+.DS_Store
+.idea/
+.vscode/
+*.log
