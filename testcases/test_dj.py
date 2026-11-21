@@ -168,3 +168,34 @@ class TestDjApi:
         else:
             a.contains(body["msg"], case["expect"]["msg"], "错误提示")
         a.finish()
+
+    @allure.story("音量传入非整数被拒")
+    def test_volume_with_non_integer(self, client):
+        """音量只接受整数，字符串与浮点都不写入状态"""
+        dj = DjApi(client)
+
+        str_resp = dj.volume("60").json()
+        a = AssertHandler()
+        a.eq(str_resp["code"], 400, "字符串音量返回400")
+        a.contains(str_resp["msg"], "0-100", "错误提示")
+        a.finish()
+
+        float_resp = dj.volume(60.5).json()
+        a2 = AssertHandler()
+        a2.eq(float_resp["code"], 400, "浮点音量返回400")
+        a2.finish()
+
+    @allure.story("暂停后重新播放恢复")
+    def test_resume_after_pause(self, client):
+        dj = DjApi(client)
+        dj.play(1)
+        dj.pause()
+
+        resp = dj.play(1)
+        body = resp.json()
+
+        a = AssertHandler()
+        a.eq(body["code"], 200, "业务码")
+        a.eq(body["data"]["song_id"], 1, "仍为暂停前的歌曲")
+        a.eq(body["data"]["playing"], True, "重新播放后应恢复播放状态")
+        a.finish()
