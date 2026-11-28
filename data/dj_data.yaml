@@ -66,3 +66,11 @@ play_cases:
     expect:
       code: 404
       msg: "歌曲不存在"
+
+# 音量连续设置：中间值 → 下限 → 上限，每步都读服务端状态
+volume_sequence: [50, 0, 100]
+
+# 均衡器切回默认档：先切到其他档位，再切回 normal
+eq_reset:
+  from: "rock"
+  to: "normal"

@@ -117,6 +117,22 @@ def dj_playlist():
     return ok({"total": len(SONGS), "list": SONGS})
 
 
+@app.get("/dj/status")
+def dj_status():
+    """播放器当前状态：音量、均衡器、播放模式、播放中曲目"""
+    song = find_song(STATE["current"]) if STATE["current"] is not None else None
+    return ok(
+        {
+            "volume": STATE["volume"],
+            "eq": STATE["eq"],
+            "play_mode": STATE["play_mode"],
+            "playing": STATE["playing"],
+            "current": STATE["current"],
+            "current_name": song["name"] if song else None,
+        }
+    )
+
+
 @app.post("/dj/play")
 def dj_play():
     data = body()

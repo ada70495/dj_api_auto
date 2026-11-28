@@ -185,6 +185,36 @@ class TestDjApi:
         a2.eq(float_resp["code"], 400, "浮点音量返回400")
         a2.finish()
 
+    @allure.story("音量连续设置后状态正确")
+    def test_volume_sequence_state(self, client):
+        """依次设置 50 → 0 → 100，每一步都从服务端状态读回音量"""
+        dj = DjApi(client)
+
+        for volume in DJ["volume_sequence"]:
+            resp = dj.volume(volume).json()
+            state = dj.status().json()["data"]
+
+            a = AssertHandler()
+            a.eq(resp["code"], 200, f"设置音量 {volume} 业务码")
+            a.eq(resp["data"]["volume"], volume, f"响应音量 {volume}")
+            a.eq(state["volume"], volume, f"服务端音量 {volume}")
+            a.finish()
+
+    @allure.story("均衡器切回默认档")
+    def test_eq_reset_to_normal(self, client):
+        """先切 rock 再切回 normal，服务端均衡器状态应为 normal"""
+        dj = DjApi(client)
+        dj.eq(DJ["eq_reset"]["from"])
+
+        resp = dj.eq(DJ["eq_reset"]["to"]).json()
+        state = dj.status().json()["data"]
+
+        a = AssertHandler()
+        a.eq(resp["code"], 200, "业务码")
+        a.eq(resp["data"]["mode"], DJ["eq_reset"]["to"], "响应均衡器档位")
+        a.eq(state["eq"], DJ["eq_reset"]["to"], "服务端均衡器状态")
+        a.finish()
+
     @allure.story("暂停后重新播放恢复")
     def test_resume_after_pause(self, client):
         dj = DjApi(client)

@@ -4,7 +4,7 @@ DJ 音乐播放器后台接口的自动化测试工程，覆盖歌单查询、�
 技术栈：Python 3.13 + requests + pytest + PyYAML + Allure + loguru，被测服务用 Flask 起在本地。
 
 被测服务是仓库里的一个 Flask 应用（`mock_server/app.py`），9 个业务接口，带参数校验、状态机约束和签名校验。
-测试代码直接请求这个服务，克隆仓库、装好依赖就能跑，不依赖内网环境。当前用例 22 条。
+测试代码直接请求这个服务，克隆仓库、装好依赖就能跑，不依赖内网环境。当前用例 24 条。
 
 ## 环境要求
 
@@ -68,7 +68,7 @@ pytest testcases/test_dj.py -k 音量
 正常输出结尾：
 
 ```
-============================= 22 passed in 0.74s ==============================
+============================= 24 passed in 0.73s ==============================
 ```
 
 服务单独起的时候，先确认它活着：
@@ -151,6 +151,7 @@ pytest
 | --- | --- | --- | --- |
 | 登录 | POST | `/user/login` | 用户名空 → 400；密码错 → 401 |
 | 歌单 | GET | `/dj/playlist` | 返回 `total` 与 `list`，每首歌带 `song_id`、`name`、`artist`、`duration` |
+| 播放器状态 | GET | `/dj/status` | 返回当前音量、均衡器、播放模式、播放状态与曲目，供多次设置后回读校验 |
 | 播放 | POST | `/dj/play` | 缺 `song_id` → 400；歌曲不存在 → 404；成功后记录当前曲目并置为播放中 |
 | 暂停 | POST | `/dj/pause` | 当前无播放曲目 → 400；成功后保留当前曲目、`playing=false` |
 | 下一首 | POST | `/dj/next` | 当前无播放曲目 → 400；末曲继续下一首时回到第一首 |
@@ -178,6 +179,8 @@ pytest
 | `test_eq` | 3 | rock、jazz 正常、pop 非法 |
 | `test_play_mode` | 3 | loop、random 正常、shuffle 非法 |
 | `test_volume_with_non_integer` | 1 | 字符串与浮点音量均返回 400 |
+| `test_volume_sequence_state` | 1 | 50 → 0 → 100 连续设置，逐步读回服务端音量 |
+| `test_eq_reset_to_normal` | 1 | rock 之后切回 normal，响应与状态均为 normal |
 | `test_resume_after_pause` | 1 | 暂停后重新播放，同一首恢复播放状态 |
 
 ## 新增一条用例

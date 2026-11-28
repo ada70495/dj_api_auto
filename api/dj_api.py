@@ -8,6 +8,9 @@ class DjApi:
     def playlist(self):
         return self.client.get("/dj/playlist")
 
+    def status(self):
+        return self.client.get("/dj/status")
+
     def play(self, song_id: int):
         return self.client.post("/dj/play", json={"song_id": song_id})
 
