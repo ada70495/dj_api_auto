@@ -3,8 +3,7 @@
 DJ 音乐播放器后台接口的自动化测试工程，覆盖歌单查询、播放与暂停、上下切歌、音量、均衡器、播放模式。
 技术栈：Python 3.13 + requests + pytest + PyYAML + Allure + loguru，被测服务用 Flask 起在本地。
 
-被测服务是仓库里的一个 Flask 应用（`mock_server/app.py`），9 个业务接口，带参数校验、状态机约束和签名校验。
-测试代码直接请求这个服务，克隆仓库、装好依赖就能跑，不依赖内网环境。当前用例 24 条。
+被测服务是仓库里的一个 Flask 应用（`mock_server/app.py`），10 个业务接口，带参数校验、状态机约束和签名校验，默认 9300 端口。用例都指向这个本机服务，当前 24 条。
 
 ## 环境要求
 
@@ -45,7 +44,7 @@ pip install -r requirements.txt
 | `data/dj_data.yaml` | 音量、均衡器、播放模式、播放的用例参数与预期业务码、提示 |
 | `testcases/conftest.py` | `client` fixture（session 级）、`prepared_env` fixture（复位数据并登录） |
 | `testcases/test_dj.py` | 只做三件事：读数据、调 api 层、写断言 |
-| `mock_server/app.py` | 被测服务，9 个业务接口 + `/health` + `/__admin/reset` |
+| `mock_server/app.py` | 被测服务，10 个业务接口 + `/health` + `/__admin/reset` |
 | `run.py` | 起服务、跑用例、生成报告的入口 |
 | `Jenkinsfile` / `docker-compose.yml` | 流水线和容器编排 |
 
